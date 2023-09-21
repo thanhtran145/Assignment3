@@ -1,0 +1,117 @@
+{
+  "version": "2.1.0",
+  "$schema": "https://schemastore.azurewebsites.net/schemas/json/sarif-2.1.0-rtm.5.json",
+  "runs": [
+    {
+      "results": [
+        {
+          "ruleId": "C26451",
+          "message": {
+            "text": "Arithmetic overflow: Using operator '+' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '+' to avoid overflow (io.2)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/CMPR131/Assignment3/Assignment3/main.cpp"
+                },
+                "region": {
+                  "startLine": 543,
+                  "startColumn": 41,
+                  "endLine": 543,
+                  "endColumn": 97
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Tower",
+                  "decoratedName": "?Tower@@YAXXZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ]
+        },
+        {
+          "ruleId": "C26451",
+          "message": {
+            "text": "Arithmetic overflow: Using operator '+' on a 4 byte value and then casting the result to a 8 byte value. Cast the value to the wider type before calling operator '+' to avoid overflow (io.2)."
+          },
+          "locations": [
+            {
+              "physicalLocation": {
+                "artifactLocation": {
+                  "uri": "file:///D:/CMPR131/Assignment3/Assignment3/main.cpp"
+                },
+                "region": {
+                  "startLine": 549,
+                  "startColumn": 41,
+                  "endLine": 549,
+                  "endColumn": 97
+                }
+              },
+              "logicalLocations": [
+                {
+                  "fullyQualifiedName": "Tower",
+                  "decoratedName": "?Tower@@YAXXZ",
+                  "kind": "function"
+                }
+              ]
+            }
+          ]
+        }
+      ],
+      "tool": {
+        "driver": {
+          "name": "PREfast",
+          "fullName": "PREfast Code Analysis",
+          "version": "14.37.32824.0",
+          "informationUri": "https://aka.ms/cpp/ca"
+        }
+      },
+      "invocations": [
+        {
+          "executionSuccessful": true
+        }
+      ],
+      "artifacts": [
+        {
+          "location": {
+            "uri": "file:///D:/CMPR131/Assignment3/Assignment3/main.cpp"
+          },
+          "roles": [
+            "analysisTarget",
+            "resultFile"
+          ],
+          "hashes": {
+            "sha-256": "405bab83b2e32d15a82d79a9d77e1c8253052f1e0409944b1449f724decef37c"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/cmpr131/assignment3/assignment3/input.h"
+          },
+          "hashes": {
+            "sha-256": "5eea92d1c727cbc7a6d7e8ef19490021234b1225bd60763987951648bc7f2eaa"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/cmpr131/assignment3/assignment3/tictactoe.h"
+          },
+          "hashes": {
+            "sha-256": "c25843aa74aef43e4ef43abb7e457de1ff9cc394b0c720c10adb74e31f094a81"
+          }
+        },
+        {
+          "location": {
+            "uri": "file:///d:/cmpr131/assignment3/assignment3/n_queens.h"
+          },
+          "hashes": {
+            "sha-256": "1b7fbcf6a858db71f69189b9f9767117fa91c4e79711a8bbf605b80dd9ecf7cc"
+          }
+        }
+      ]
+    }
+  ]
+}

@@ -1,1 +1,4 @@
-﻿  Assignment3.vcxproj -> D:\CMPR131\Assignment3\x64\Debug\Assignment3.exe
+﻿  main.cpp
+D:\CMPR131\Assignment3\Assignment3\main.cpp(236,16): warning C4244: 'initializing': conversion from 'time_t' to 'unsigned int', possible loss of data
+D:\CMPR131\Assignment3\Assignment3\main.cpp(576,15): warning C4267: 'initializing': conversion from 'size_t' to 'int', possible loss of data
+  Assignment3.vcxproj -> D:\CMPR131\Assignment3\x64\Debug\Assignment3.exe

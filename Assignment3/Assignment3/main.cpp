@@ -28,7 +28,7 @@ void N_queens();
 void game_statistics_queens(int total_games, double fastTime, int fastTimeMoves, double longTime, int longTimeMoves, double sum, int size);
 
 void Tower();
-void printPegs(const vector<int>& pegA, const vector<int>& pegB, const vector<int>& pegC);
+void display_pegs(const vector<int>& pegA, const vector<int>& pegB, const vector<int>& pegC);
 
 // Main Function
 int main()
@@ -271,302 +271,401 @@ void game_statistics(int total_games,double fastTime, int fastTimeMoves, double 
 //********************************** Option 2 ***************************************//
 void Tower()
 {
-	char playAgain;
-	int ringsNumber;
-	int moves, discsTotalNumber = 64;
-	//using vector STL for my all 3 pegs of the disc
-	vector<int> pegA, pegB, pegC;
-	char choicePeg1, choicePeg2;
-	//going to use map STL to keep track of each moves and how fast they go, and total moves, and the game counts as well
-	map<int, int> fastTime, slowTime, gameCount, movesEachGameFast, movesEachGameSlow;
-	clock_t startTime, endTime;
-	//turning the fastestTime to int max which is (2147483647)
-	for (int i = 1; i <= discsTotalNumber; ++i) {
-		fastTime[i] = INT_MAX;
-		movesEachGameFast[i] = INT_MAX;
+	// Variables Declarations
+	char option;
+
+	int rings;
+	int moves;
+	int max_discs = 64;
+
+	vector<int> A_Peg;
+	vector<int> B_Peg; 
+	vector<int> C_Peg;
+
+
+	char Peg1_choice;
+	char Peg2_choice;
+
+	// Maps to keep track of the game stats
+	map<int, int> fast_time;
+	map<int, int> slow_time; 
+	map<int, int> total_games;
+	map<int, int> fastest_moves_each_game;
+	map<int, int> slowest_moves_each_game;
+
+
+	clock_t start_time;
+	clock_t	end_time;
+
+
+	// INT_MAX(2147483647)
+
+	for (int i = 1; i <= max_discs; ++i) 
+	{
+		fast_time[i] = INT_MAX;
+		fastest_moves_each_game[i] = INT_MAX;
 	}
-	do {
+	do 
+	{
 		system("cls");
-		cout << "\n\tThe Tower of Hanoi also called the Tower of Brahma or Lucas' Tower is a mathematical game.\n"
-			"\tIt consists of three pegs and a number of rings of different sizes, which can slide onto\n"
-			"\tany peg.The game starts with the rings in a neat stack in ascending order of size on one\n"
-			"\tpeg, the smallest at the top, thus making a conical shape.\n"
-			"\n\tThe objective of the game is to move the entire stack from the starting peg - A to ending peg - B,\n"
-			"\tobeying the following simple rules:\n"
-			"\n\t\t1. Only one disk can be moved at a time.\n"
-			"\t\t2. Each move consists of taking the upper disk from one of the stacks and\n"
-			"\t\t   placing it on top of another stack or on an empty peg.\n"
-			"\t\t3. No larger disk may be placed on top of a smaller disk.\n";
-		//clear the elements so it does not keep adding them 
-		pegA.clear();
-		pegB.clear();
-		pegC.clear();
+		cout << "\n\tThe Tower of Hanoi also called the Tower of Brahma or Lucas' Tower is a mathematical game.";
+		cout << "\n\tIt consists of three pegs and a number of rings of different sizes, which can slide onto";
+		cout << "\n\tany peg.The game starts with the rings in a neat stack in ascending order of size on one";
+		cout << "\n\tpeg, the smallest at the top, thus making a conical shape.";
+		cout << "\n\n\tThe objective of the game is to move the entire stack from the starting peg - A to ending peg - B,";
+		cout << "\n\tobeying the following simple rules:";
+		cout << "\n\n\t\t1. Only one disk can be moved at a time.";
+		cout << "\n\t\t2. Each move consists of taking the upper disk from one of the stacks and";
+		cout << "\n\t\t   placing it on top of another stack or on an empty peg.";
+		cout <<	"\n\t\t3. No larger disk may be placed on top of a smaller disk.\n";
+
+		// Clear the elements 
+		A_Peg.clear();
+		B_Peg.clear();
+		C_Peg.clear();
 		moves = 0;
 
-		ringsNumber = inputInteger("\n\tEnter the number of rings (1..64) to begin: ", 1, 64);
-		//getting the time start, start here
-		startTime = clock();
-		//get the pegs to go in A but will print the greatest number in the bottom and smallest in the top, start with ring number then decrement
-		for (int i = ringsNumber; i >= 1; i--) {
-			//push the elements to pegA, from descending: Ex ringsNumber=4; 4 3 2 1
-			pegA.push_back(i);
+		rings = inputInteger("\n\tEnter the number of rings (1..64) to begin: ", 1, max_discs);
+
+		// Start the time
+		start_time = clock();
+
+		// Store the rings in descending order for the A Peg
+		for (int i = rings; i >= 1; i--) 
+		{
+			A_Peg.push_back(i);
 		}
-		printPegs(pegA, pegB, pegC);
-		//checking if the move was valid or not
+
+		display_pegs(A_Peg, B_Peg, C_Peg);
+
+		// Flag to validate the move
 		bool moved = false;
-		do {
-			choicePeg1 = inputChar("\n\tSelect the top disk from the start peg (A, B, C, or Q-quit): ", (static_cast<string>("ABCQ")));
-			choicePeg2 = inputChar("\tSelect the end peg (A, B, C, or Q-quit) to move the selected disk: ", (static_cast<string>("ABCQ")));
-			switch (toupper(choicePeg1)) {
-			case 'A': {
-				//check if pegA is empty
-				if (pegA.empty()) {
+
+		do 
+		{
+			Peg1_choice = inputChar("\n\tSelect the top disk from the start peg (A, B, C, or Q-quit): ", (static_cast<string>("ABCQ")));
+			Peg2_choice = inputChar("\tSelect the end peg (A, B, C, or Q-quit) to move the selected disk: ", (static_cast<string>("ABCQ")));
+			switch (toupper(Peg1_choice)) 
+			{
+			case 'A': 
+			{
+				//check if A Peg is empty
+				if (A_Peg.empty()) 
+				{
 					cout << "\n\tERROR: Cannot make the move. There is no disk in the selected peg-A.\n";
 					cout << "\t\tPlease choose again.";
-					printPegs(pegA, pegB, pegC);
+
+					display_pegs(A_Peg, B_Peg, C_Peg);
 					break;
 				}
-				if (toupper(choicePeg2) == 'B') {
-					//if pegB has no disc OR pegA is less than pegB run this
-					if (pegB.empty() || pegA.back() < pegB.back()) {
-						//get pegA from the back(last element) and push it to pegB
-						pegB.push_back(pegA.back());
-						//now pop it from pegA since we dont want it there no more (in pegA)
-						pegA.pop_back();
+				if (toupper(Peg2_choice) == 'B') 
+				{
+					if (B_Peg.empty() || A_Peg.back() < B_Peg.back()) 
+					{
+						// push elemnent from A peg to B peg
+						B_Peg.push_back(A_Peg.back());
+
+						// pop it from A peg  
+						A_Peg.pop_back();
 						cout << "\n\tTop disk from peg-A has moved to peg-B.";
-						//print the Tower of Hanoi
-						printPegs(pegA, pegB, pegC);
-						//flag it to true to show that the move was valid (do it for the other cases)
+
+						//display the Tower of Hanoi
+						display_pegs(A_Peg, B_Peg, C_Peg);
+
 						moved = true;
 					}
-					else {
-						cout << "\n\tERROR: Cannot make the move. Top disk(" << pegA.back() << ") of peg-A, is larger than top disk(" << pegB.back() << ") of peg-B.\n";
+					else 
+					{
+						cout << "\n\tERROR: Cannot make the move. Top disk(" << A_Peg.back() << ") of peg-A, is larger than top disk(" << B_Peg.back() << ") of peg-B.\n";
 						cout << "\t\tPlease choose again.\n";
-						printPegs(pegA, pegB, pegC);
+						display_pegs(A_Peg, B_Peg, C_Peg);
 					}
 				}
-				else if (toupper(choicePeg2) == 'C') {
-					if (pegC.empty() || pegA.back() < pegC.back()) {
-						//get pegA from the back(last element) now push to pegC
-						pegC.push_back(pegA.back());
-						pegA.pop_back();
+				else if (toupper(Peg2_choice) == 'C') 
+				{
+					if (C_Peg.empty() || A_Peg.back() < C_Peg.back())
+					{
+						// push elemnent from A peg to C peg
+						C_Peg.push_back(A_Peg.back());
+						A_Peg.pop_back();
+
 						cout << "\n\tTop disk from peg-A has moved to peg-C.";
-						//print the Tower of Hanoi
-						printPegs(pegA, pegB, pegC);
+
+						// display the Tower of Hanoi
+						display_pegs(A_Peg, B_Peg, C_Peg);
 						moved = true;
 					}
-					else {
-						cout << "\n\tERROR: Cannot make the move. Top disk(" << pegA.back() << ") of peg-A, is larger than top disk(" << pegC.back() << ") of peg-C.\n";
+					else 
+					{
+						cout << "\n\tERROR: Cannot make the move. Top disk(" << A_Peg.back() << ") of peg-A, is larger than top disk(" << C_Peg.back() << ") of peg-C.\n";
 						cout << "\t\tPlease choose again.\n";
-						printPegs(pegA, pegB, pegC);
+						display_pegs(A_Peg, B_Peg, C_Peg);
 					}
 				}
-				else if (toupper(choicePeg2) == 'Q') {
+				else if (toupper(Peg2_choice) == 'Q') 
+				{
 					return;
 				}
 			}
 					break;
-			case 'B': {
-				//check if pegB is empty
-				if (pegB.empty()) {
+			case 'B': 
+			{
+				// Validation of B peg
+				if (B_Peg.empty()) 
+				{
 					cout << "\n\tERROR: Cannot make the move. There is no disk in the selected peg-B.\n";
 					cout << "\t\tPlease choose again.";
-					printPegs(pegA, pegB, pegC);
+
+					display_pegs(A_Peg, B_Peg, C_Peg);
 					break;
 				}
-				if (toupper(choicePeg2) == 'A') {
-					//if pegA has no disc OR pegB is less than pegA run this
-					if (pegA.empty() || pegB.back() < pegA.back()) {
-						//get pegB from the back(last element) now push to pegA
-						pegA.push_back(pegB.back());
-						//now pop it from pegB since we dont want it there no more (in pegB)
-						pegB.pop_back();
+				if (toupper(Peg2_choice) == 'A') 
+				{
+					if (A_Peg.empty() || B_Peg.back() < A_Peg.back()) 
+					{
+						// push elemnent from B peg to A peg
+						A_Peg.push_back(B_Peg.back());
+						B_Peg.pop_back();
+
 						cout << "\n\tTop disk from peg-B has moved to peg-A.";
-						printPegs(pegA, pegB, pegC);
+
+						// display the Tower of Ha Noi
+						display_pegs(A_Peg, B_Peg, C_Peg);
 						moved = true;
 					}
-					else {
-						cout << "\n\tERROR: Cannot make the move. Top disk(" << pegB.back() << ") of peg-B, is larger than top disk(" << pegA.back() << ") of peg-A.\n";
+					else
+					{
+						cout << "\n\tERROR: Cannot make the move. Top disk(" << B_Peg.back() << ") of peg-B, is larger than top disk(" << A_Peg.back() << ") of peg-A.\n";
 						cout << "\t\tPlease choose again.\n";
-						printPegs(pegA, pegB, pegC);
+						display_pegs(A_Peg, B_Peg, C_Peg);
 					}
 				}
-				else if (toupper(choicePeg2) == 'C') {
-					if (pegC.empty() || pegB.back() < pegC.back()) {
-						//get pegB from the back(last element) now push to pegC
-						pegC.push_back(pegB.back());
-						pegB.pop_back();
+				else if (toupper(Peg2_choice) == 'C') 
+				{
+					if (C_Peg.empty() || B_Peg.back() < C_Peg.back())
+					{
+						// push elemnent from B peg to C peg
+						C_Peg.push_back(B_Peg.back());
+						B_Peg.pop_back();
+
 						cout << "\n\tTop disk from peg-B has moved to peg-C.";
-						printPegs(pegA, pegB, pegC);
+
+						display_pegs(A_Peg, B_Peg, C_Peg);
 						moved = true;
 					}
-					else {
-						cout << "\n\tERROR: Cannot make the move. Top disk(" << pegB.back() << ") of peg-B, is larger than top disk(" << pegC.back() << ") of peg-C.\n";
+					else 
+					{
+						cout << "\n\tERROR: Cannot make the move. Top disk(" << B_Peg.back() << ") of peg-B, is larger than top disk(" << C_Peg.back() << ") of peg-C.\n";
 						cout << "\t\tPlease choose again.\n";
-						printPegs(pegA, pegB, pegC);
+
+						display_pegs(A_Peg, B_Peg, C_Peg);
 					}
 				}
-				else if (toupper(choicePeg2) == 'Q') {
+				else if (toupper(Peg2_choice) == 'Q') 
+				{
 					return;
 				}
+
+				break;
 			}
-					break;
-			case 'C': {
-				//check if pegC is empty
-				if (pegC.empty()) {
+			case 'C': 
+			{
+				// Validation for C Peg
+				if (C_Peg.empty())
+				{
 					cout << "\n\tERROR: Cannot make the move. There is no disk in the selected peg-C.\n";
 					cout << "\t\tPlease choose again.";
-					printPegs(pegA, pegB, pegC);
+
+					display_pegs(A_Peg, B_Peg, C_Peg);
 					break;
 				}
-				if (toupper(choicePeg2) == 'A') {
-					if (pegA.empty() || pegC.back() < pegA.back()) {
-						//get pegC from the back(last element) now push to pegA
-						pegA.push_back(pegC.back());
-						//now pop it from pegC since we dont want it there no more (in pegC)
-						pegC.pop_back();
+				if (toupper(Peg2_choice) == 'A')
+				{
+					if (A_Peg.empty() || C_Peg.back() < A_Peg.back())
+					{
+						// push elemnent from C peg to A peg
+						A_Peg.push_back(C_Peg.back());
+						C_Peg.pop_back();
+
 						cout << "\n\tTop disk from peg-C has moved to peg-A.";
-						printPegs(pegA, pegB, pegC);
+
+						// display the tower of Ha Noi
+						display_pegs(A_Peg, B_Peg, C_Peg);
 						moved = true;
 					}
-					else {
-						cout << "\n\tERROR: Cannot make the move. Top disk(" << pegC.back() << ") of peg-C, is larger than top disk(" << pegA.back() << ") of peg-A.\n";
+					else
+					{
+						cout << "\n\tERROR: Cannot make the move. Top disk(" << C_Peg.back() << ") of peg-C, is larger than top disk(" << A_Peg.back() << ") of peg-A.\n";
 						cout << "\t\tPlease choose again.\n";
-						printPegs(pegA, pegB, pegC);
+						display_pegs(A_Peg, B_Peg, C_Peg);
 					}
 				}
-				else if (toupper(choicePeg2) == 'B') {
-					if (pegB.empty() || pegC.back() < pegB.back()) {
-						//get pegC from the back(last element) now push to pegB
-						pegB.push_back(pegC.back());
-						pegC.pop_back();
+				else if (toupper(Peg2_choice) == 'B')
+				{
+					if (B_Peg.empty() || C_Peg.back() < B_Peg.back())
+					{
+						// push elemnent from B peg to C peg
+						B_Peg.push_back(C_Peg.back());
+						C_Peg.pop_back();
+
 						cout << "\n\tTop disk from peg-C has moved to peg-B.";
-						printPegs(pegA, pegB, pegC);
+
+						display_pegs(A_Peg, B_Peg, C_Peg);
 						moved = true;
 					}
-					else {
-						cout << "\n\tERROR: Cannot make the move. Top disk(" << pegC.back() << ") of peg-C, is larger than top disk(" << pegB.back() << ") of peg-B.\n";
+					else
+					{
+						cout << "\n\tERROR: Cannot make the move. Top disk(" << C_Peg.back() << ") of peg-C, is larger than top disk(" << B_Peg.back() << ") of peg-B.\n";
 						cout << "\t\tPlease choose again.\n";
-						printPegs(pegA, pegB, pegC);
+						display_pegs(A_Peg, B_Peg, C_Peg);
 					}
 				}
-				else if (toupper(choicePeg2) == 'Q') {
+				else if (toupper(Peg2_choice) == 'Q')
+				{
+					return;
+				}
+				break;
+			}
+			case 'Q': 
+			{
+				if (toupper(Peg1_choice) == 'Q' || toupper(Peg2_choice) == 'Q')
+				{
 					return;
 				}
 			}
-					break;
-			case 'Q': {
-				if (toupper(choicePeg1) == 'Q' || toupper(choicePeg2) == 'Q') {
-					return;
-				}
 			}
-			}
-			//if the moved was valid then increment, keep track how many moves we do
-			if (moved != false) {
+
+			// Keep track of the moves
+			if (moved != false) 
+			{
 				moves++;
 			}
-			//flag it back to false, to then check again if the move was valid
-			moved = false;
-		} while (pegC.size() < ringsNumber);
-		//getting the end start, use clock() function after pegC has all the discs
-		endTime = clock();
-		//calculating the time, subtract the end time to the start time
-		int gameTimeInSeconds = (endTime - startTime) / CLOCKS_PER_SEC;
-		//set the ringsNumber(key) = to the min of the value (ringsNumber-> fastTime)
-		fastTime[ringsNumber] = min(fastTime[ringsNumber], gameTimeInSeconds);
-		//getting the max, meaning the time that is the longest
-		slowTime[ringsNumber] = max(slowTime[ringsNumber], gameTimeInSeconds);
-		//increment how many games have been played with the discs numbers (ringnumbers)
-		gameCount[ringsNumber]++;
 
-		//set the key(ringNumbers) to the value which is the moves now, we getting each move for each game we play
-		movesEachGameFast[ringsNumber] = min(movesEachGameFast[ringsNumber], moves);
-		movesEachGameSlow[ringsNumber] = max(movesEachGameSlow[ringsNumber], moves);
+			// Reset the flag
+			moved = false;
+		} while (C_Peg.size() < rings);
+
+		// Stop the clock
+		end_time = clock();
+
+		// Calculating the time
+		int game_time = (end_time - start_time) / CLOCKS_PER_SEC;
+
+		// Get the fastest time
+		fast_time[rings] = min(fast_time[rings], game_time);
+
+		// Get the slowest time
+		slow_time[rings] = max(slow_time[rings], game_time);
+
+		// Increment how many games have been played with the discs numbers 
+		total_games[rings]++;
+
+		// Set the key to the value which is the moves now, we getting each move for each game we play
+		fastest_moves_each_game[rings] = min(fastest_moves_each_game[rings], moves);
+		slowest_moves_each_game[rings] = max(slowest_moves_each_game[rings], moves);
 
 		cout << "\n\tCongratulation! You have solved the game in " << moves << " moves.\n";
-		playAgain = inputChar("\n\tPlay again? (Y-yes or N-no): ", 'y', 'n');
-	} while (toupper(playAgain) == 'Y');
-	double averageSeconds;
+		option = inputChar("\n\tPlay again? (Y-yes or N-no): ", 'y', 'n');
+
+	} while (toupper(option) == 'Y');
+
+	double average_seconds;
+
 	cout << "\n\tGame statistics:\n\n";
-	for (auto& i : gameCount) {
-		//get the key and the second is the value
-		int discsOverallUsed = i.first;
+	for (auto& i : total_games) 
+	{
+		// The key and The value
+		int discs_overall_used = i.first;
 		int games = i.second;
-		//if 1 then there are only 1 game being played
-		if (games == 1) {
-			//getting the average seconds, have to add fast time + slow time then divide by games played
-			averageSeconds = static_cast<double>(fastTime[discsOverallUsed] + slowTime[discsOverallUsed]) / 2.0;
-			cout << "\t" << games << " game using " << discsOverallUsed << " disks was played.\n";
+
+		if (games == 1)
+		{
+			// The average seconds equals to them sum of fast time and slow time then divide by games played
+			average_seconds = static_cast<double>(fast_time[discs_overall_used] + slow_time[discs_overall_used]) / 2.0;
+			cout << "\t" << games << " game using " << discs_overall_used << " disks was played.\n";
 		}
-		else {
-			//getting the average seconds, have to add fast time + slow time then divide by games played
-			averageSeconds = static_cast<double>(fastTime[discsOverallUsed] + slowTime[discsOverallUsed]) / games;
-			cout << "\t" << games << " games using " << discsOverallUsed << " disks was played.\n";
+		else
+		{
+			// The average seconds equals to the sum of fast time and slow time then divide by games played
+			average_seconds = static_cast<double>(fast_time[discs_overall_used] + slow_time[discs_overall_used]) / games;
+			cout << "\t" << games << " games using " << discs_overall_used << " disks was played.\n";
 		}
-		cout << "\t\tThe fastest time was " << fastTime[discsOverallUsed] << " seconds in " << movesEachGameFast[discsOverallUsed] << " moves.\n";
-		cout << "\t\tThe slowest time was " << slowTime[discsOverallUsed] << " seconds in " << movesEachGameSlow[discsOverallUsed] << " moves.\n";
-		cout << "\t\tThe average time was " << averageSeconds << " second(s)\n";
+		cout << "\t\tThe fastest time was " << fast_time[discs_overall_used] << " seconds in " << fastest_moves_each_game[discs_overall_used] << " moves.\n";
+		cout << "\t\tThe slowest time was " << slow_time[discs_overall_used] << " seconds in " << slowest_moves_each_game[discs_overall_used] << " moves.\n";
+		cout << "\t\tThe average time was " << average_seconds << " second(s)\n";
 	}
 }
 
-//precondition: function is going to have 3 vector as parameters (argu)
-//postcondition: function is going to update the pegs in order of how they are moving
-void printPegs(const vector<int>& pegA, const vector<int>& pegB, const vector<int>& pegC) 
+//Precondition: three const pegs vector parameter 
+//Costcondition: Display the game
+void display_pegs(const vector<int>& A_Peg, const vector<int>& B_peg, const vector<int>& C_Peg) 
 {
-	//get the greatest size between pegA, pegB, and pegC to check how many discs can it print out
-	int maxRings = max(pegA.size(), max(pegB.size(), pegC.size()));
+	// The greatest size between the pegs
+	int maxium_rings = max(A_Peg.size(), max(B_peg.size(), C_Peg.size()));
+
 	cout << "\n\n\tTower of Hanoi\n\n";
-	//reverse the numbers, starting from greatest in the bottom, smaller on the top (displaying wise)
-	for (int i = maxRings; i >= 0; i--) {
-		//print peg A
+
+	// Reverse for loops to start from greatest in the bottom, smaller on the top
+	for (int i = maxium_rings; i >= 0; i--) 
+	{
+		// Display the A Peg
 		cout << "\t";
-		//check if the maxRings is less than the size in pegA
-		if (i < pegA.size()) {
-			int ringSize = pegA[i];
+		if (i < A_Peg.size()) 
+		{
+			int ring_size = A_Peg[i];
+
 			//converting it to a string
-			string ringString = to_string(ringSize);
-			for (int j = 0; j < ringString.size(); j++) {
-				cout << ringString[j] << "";
+			string ring_string = to_string(ring_size);
+			for (int j = 0; j < ring_string.size(); j++) 
+			{
+				cout << ring_string[j] << "";
 			}
 		}
-		else {
+		else 
+		{
 			cout << string(1, char(186)) << "";
 		}
-		//print peg B
+		
+		// Display the B Peg
 		cout << "\t";
-		//check if the maxRings is less than the size in pegB
-		if (i < pegB.size()) {
-			int ringSize = pegB[i];
+		if (i < B_peg.size()) 
+		{
+			int ring_size = B_peg[i];
+
 			//converting it to a string
-			string ringString = to_string(ringSize);
-			for (int j = 0; j < ringString.size(); j++) {
-				cout << ringString[j] << "";
+			string ring_string = to_string(ring_size);
+			for (int j = 0; j < ring_string.size(); j++) 
+			{
+				cout << ring_string[j] << "";
 			}
 		}
-		else {
+		else 
+		{
 			cout << string(1, char(186)) << "";
 		}
-		//print peg C
+
+		// Display the C Peg
 		cout << "\t";
-		//check if the maxRings is less than the size in pegC
-		if (i < pegC.size()) {
-			int ringSize = pegC[i];
+		if (i < C_Peg.size()) 
+		{
+			int ring_size = C_Peg[i];
 			//converting it to a string
-			string ringString = to_string(ringSize);
-			for (int j = 0; j < ringString.size(); j++) {
-				cout << ringString[j] << "";
+			string ring_string = to_string(ring_size);
+			for (int j = 0; j < ring_string.size(); j++) 
+			{
+				cout << ring_string[j] << "";
 			}
 		}
-		else {
+		else 
+		{
 			cout << "" << string(1, char(186)) << "";
 		}
-		cout << endl;
+		cout << "\n";
 	}
 	cout << "\t" << string(1, char(186)) << "\t" << string(1, char(186)) << "\t" << string(1, char(186)) << "\n";
 	cout << "     " << string(7, char(205)) << " " << string(7, char(205)) << " " << string(7, char(205));
 	cout << "\n\tA\tB\tC\n\n";
 }
-
 
 //********************************** Option 3 ***************************************//
 void N_queens()
